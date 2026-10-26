@@ -304,6 +304,9 @@
   .tile figure{position:relative;overflow:hidden}
   .tile img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.22,1,.36,1)}
   .tile:hover img{transform:scale(1.07)}
+  .tile video{width:100%;height:100%;object-fit:cover;display:block;background:#0a0f24}
+  .tile[data-cat="short"],.tile[data-cat="longform"]{cursor:pointer}
+  .tile.is-playing .play{opacity:0!important;transform:translate(-50%,-50%) scale(.8)!important}
   .tile .ar-reel{aspect-ratio:9/16}
   /* short-form view: five true-portrait reels spanning the full content width,
      edge to edge like the heading and filters above them. Height comes from
@@ -327,14 +330,8 @@
     font-family:var(--font-ui);font-weight:600;font-size:.78rem;padding:5px 11px;border-radius:999px;
     backdrop-filter:blur(4px);
   }
-  .tile-meta{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:30px 12px 10px;background:linear-gradient(180deg,transparent,rgba(5,11,27,.86) 55%);color:#fff;pointer-events:none}
-  .tile-meta h4{font-family:var(--font-ui);font-weight:700;font-size:.86rem;line-height:1.25;color:#fff}
-  .tile-meta p{font-size:.74rem;color:rgba(255,255,255,.76);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .tile-tag{
-    display:inline-block;font-family:var(--font-ui);font-weight:700;font-size:.7rem;letter-spacing:.1em;
-    text-transform:uppercase;color:var(--ink);background:var(--yellow);
-    padding:3px 8px;border-radius:999px;margin-bottom:5px;
-  }
+  .tile-meta{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:24px 12px 11px;background:linear-gradient(180deg,transparent,rgba(5,11,27,.86) 60%);color:#fff;pointer-events:none}
+  .tile-meta h4{font-family:var(--font-ui);font-weight:700;font-size:.88rem;line-height:1.25;color:#fff}
 
   /* ---------- case studies ---------- */
   .case-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
@@ -696,14 +693,13 @@
     .client{width:132px;padding:10px 8px 6px}
     .client .badge{width:80px;height:80px}
     .client h4{font-size:.88rem;margin-top:10px}
-    /* work - compact filters, tile captions lose the redundant tag chip */
+    /* work - compact filters and captions */
     .work-filters{gap:6px;margin-bottom:16px}
     .wf{font-size:.82rem;padding:7px 14px}
     /* UGC Unboxing tile stays hidden on mobile so the short-form row
        keeps an even grid; desktop still shows all five tiles */
     .tile.hide-m{display:none}
-    .tile-tag{display:none}
-    .tile-meta{padding:24px 10px 8px}
+    .tile-meta{padding:20px 10px 9px}
     .tile-meta h4{font-size:.8rem}
     /* kind words - swipe carousel: one review at a time, next one peeking */
     .tst-grid{
@@ -735,34 +731,48 @@
     .svc-tab{font-size:.74rem;padding:8px 2px}
   }
   /* ---------- mobile feedback round 3 (<=820px) ----------
-     Navbar morph: once scrolled, the dark pill shell melts away - the
-     CTA slides left and fades out as the gap and padding collapse,
-     and only the round logo remains, gliding to a 20px top-left pin
-     where it floats while scrolling. Scrolling back to the top
-     reverses the whole motion. One long, smooth easing throughout.
-     Desktop keeps its full pill and its fade-out behaviour; none of
-     these rules apply above 820px. Mobile only. */
+     Navbar morph: once scrolled, the dark pill shell melts away and
+     only the round logo remains pinned top-left; scrolling back to
+     the top restores the full pill. Vibration fix: the pill used to
+     be flex-centered while its width shrank (CTA max-width, padding
+     and gap all collapsing), so it kept re-centering mid-animation
+     and fought its own leftward glide - that was the shake. Now the
+     pill is anchored to the left edge of the nav and centered with
+     a transform, and its width never changes during the morph: the
+     CTA only fades and slides away inside it while the pill's
+     background and shadow melt. Only transform, background and
+     shadow animate, so the logo glides in one clean line to the
+     exact same resting spot as before (left edge 22px from the
+     screen edge, top edge 24px down). The scroll JS adds a buffer -
+     morph past 60px, restore below 40px - so a bounce at the
+     threshold cannot restart the motion, and the desktop .scrolled
+     scale step is neutralised here so it cannot interrupt the
+     glide. Desktop keeps its full pill and its fade-out behaviour;
+     none of these rules apply above 820px. Mobile only. */
   @media (max-width:820px){
+    .nav{align-items:flex-start;padding-left:14px}
     .pill{
+      transform:translateX(calc(50vw - 50% - 14px));
       transition:transform .65s cubic-bezier(.22,1,.36,1), box-shadow .5s ease,
-        background-color .45s ease, padding .65s cubic-bezier(.22,1,.36,1),
-        gap .65s cubic-bezier(.22,1,.36,1);
+        background-color .45s ease;
     }
+    /* same resting transform with .scrolled, so crossing 40px of
+       scroll starts no competing scale animation on mobile */
+    .nav.scrolled .pill{transform:translateX(calc(50vw - 50% - 14px))}
     .pill .btn-pill{
-      max-width:220px;overflow:hidden;
       transition:opacity .38s ease, transform .65s cubic-bezier(.22,1,.36,1),
-        max-width .65s cubic-bezier(.22,1,.36,1), padding .65s cubic-bezier(.22,1,.36,1),
         background .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
     }
     .brand-circle{transition:transform .3s ease, box-shadow .5s ease}
     .nav.logo-only .pill{
-      background:transparent;box-shadow:none;padding:0;gap:0;
-      transform:translate(calc(43px - 50vw), 8px);
+      background:transparent;box-shadow:none;
+      transform:translate(0,0);
+      pointer-events:none;
     }
+    .nav.logo-only .brand{pointer-events:auto}
     .nav.logo-only .brand-circle{box-shadow:0 10px 26px rgba(5,11,27,.28)}
     .nav.logo-only .pill .btn-pill{
-      max-width:0;opacity:0;transform:translateX(-12px);
-      padding-left:0;padding-right:0;border-width:0;pointer-events:none;
+      opacity:0;transform:translateX(-12px);pointer-events:none;
     }
   }
   /* ---------- mobile feedback round 4 (<=820px) ----------
@@ -986,56 +996,56 @@
     </div>
     <div class="work-grid five" id="workGrid">
       <article class="tile rv" data-cat="short">
-        <figure class="ar-reel"><img src="src/editor-cutting-a-short-form-video-on-a-studio-monitor.jpg" alt="Editor cutting a short-form video on a studio monitor" /><span class="views">1.2M views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
-        <div class="tile-meta"><span class="tile-tag">Short-Form</span><h4>Founder UGC Ad · Try Mako</h4><p>Hook rewrite + fast-cut edit · Meta / TikTok</p></div>
+        <figure class="ar-reel"><video class="tile-video" src="https://res.cloudinary.com/dofiza4ph/video/upload/v1793014033/new_style_reel_yoxhde.mp4" poster="https://res.cloudinary.com/dofiza4ph/video/upload/v1793014033/new_style_reel_yoxhde.jpg" preload="none" playsinline loop aria-label="Founder UGC Ad video"></video><span class="views">1.2M views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
+        <div class="tile-meta"><h4>Founder UGC Ad</h4></div>
       </article>
       <article class="tile rv hide" data-cat="graphic" style="--d:.06s">
-        <figure class="ar-graphic"><img src="src/bold-poster-design-artwork.webp" alt="Bold poster design artwork" /></figure>
-        <div class="tile-meta"><span class="tile-tag">Graphics</span><h4>Launch Poster Series</h4><p>Key art + social sizes · Print &amp; digital</p></div>
+        <figure class="ar-graphic"><img src="https://res.cloudinary.com/dofiza4ph/image/upload/v1793012366/Your_Brand_Doesn_t_need_More_Content.jpg_o6apdf.jpg" alt="Bold poster design artwork" /></figure>
+        <div class="tile-meta"><h4>Your Brand Doesn't Need More Content</h4></div>
       </article>
       <article class="tile rv" data-cat="short" style="--d:.12s">
-        <figure class="ar-reel"><img src="src/podcast-studio-recording-setup-being-edited.jpg" alt="Podcast studio recording setup being edited" /><span class="views">860K views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
-        <div class="tile-meta"><span class="tile-tag">Short-Form</span><h4>Podcast Clip Engine</h4><p>Long episode → 12 captioned clips</p></div>
+        <figure class="ar-reel"><video class="tile-video" src="https://res.cloudinary.com/dofiza4ph/video/upload/v1793013924/Aria_Kesh_Final_v4_fiqtkm.mp4" poster="https://res.cloudinary.com/dofiza4ph/video/upload/v1793013924/Aria_Kesh_Final_v4_fiqtkm.jpg" preload="none" playsinline loop aria-label="Aria Kesh Clip video"></video><span class="views">860K views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
+        <div class="tile-meta"><h4>Aria Kesh Clip</h4></div>
       </article>
       <article class="tile rv hide" data-cat="graphic" style="--d:.18s">
-        <figure class="ar-graphic"><img src="src/poster-design-concepts-on-screen.webp" alt="Poster design concepts on screen" /></figure>
-        <div class="tile-meta"><span class="tile-tag">Graphics</span><h4>YouTube Thumbnail Set</h4><p>CTR concepts + A/B variants</p></div>
+        <figure class="ar-graphic"><img src="https://res.cloudinary.com/dofiza4ph/image/upload/v1793012207/UGC_ad_2.jpg_lsj76t.jpg" alt="Poster design concepts on screen" /></figure>
+        <div class="tile-meta"><h4>UGC Ad</h4></div>
       </article>
       <article class="tile rv" data-cat="short">
-        <figure class="ar-reel"><img src="src/creator-filming-a-short-form-video-with-a-ring-light.jpg" alt="Creator filming a short-form video with a ring light" /><span class="views">2.4M views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
-        <div class="tile-meta"><span class="tile-tag">Short-Form</span><h4>Product Launch Reel</h4><p>Animated captions · 9:16 exports</p></div>
+        <figure class="ar-reel"><video class="tile-video" src="https://res.cloudinary.com/dofiza4ph/video/upload/v1793013925/Billedview_Brand_-_Ad_2_tzwmvm.mp4" poster="https://res.cloudinary.com/dofiza4ph/video/upload/v1793013925/Billedview_Brand_-_Ad_2_tzwmvm.jpg" preload="none" playsinline loop aria-label="Billedview Brand Ad video"></video><span class="views">2.4M views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
+        <div class="tile-meta"><h4>Billedview Brand Ad</h4></div>
       </article>
       <article class="tile rv hide" data-cat="graphic" style="--d:.06s">
-        <figure class="ar-graphic"><img src="src/minimal-branding-stationery-laid-out-on-a-desk.jpg" alt="Minimal branding stationery laid out on a desk" /></figure>
-        <div class="tile-meta"><span class="tile-tag">Graphics</span><h4>Brand Identity Kit</h4><p>Logo system · Colors · Type · Templates</p></div>
+        <figure class="ar-graphic"><img src="https://res.cloudinary.com/dofiza4ph/image/upload/v1793012206/Graphic_Ad_4.jpg_wicgfq.jpg" alt="Minimal branding stationery laid out on a desk" /></figure>
+        <div class="tile-meta"><h4>Mako Ad Creative</h4></div>
       </article>
       <article class="tile rv" data-cat="short" style="--d:.12s">
-        <figure class="ar-reel"><img src="src/studio-shoot-still-from-a-short-form-production.jpg" alt="Studio shoot still from a short-form production" /><span class="views">640K views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
-        <div class="tile-meta"><span class="tile-tag">Short-Form</span><h4>Talking-Head Shorts Pack</h4><p>Weekly batch · Punch-ins &amp; B-roll</p></div>
+        <figure class="ar-reel"><video class="tile-video" src="https://res.cloudinary.com/dofiza4ph/video/upload/v1793012209/Mako_Zoom_ml3fli.mp4" poster="https://res.cloudinary.com/dofiza4ph/video/upload/v1793012209/Mako_Zoom_ml3fli.jpg" preload="none" playsinline loop aria-label="Mako Zoom video"></video><span class="views">640K views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
+        <div class="tile-meta"><h4>Mako Zoom</h4></div>
       </article>
       <article class="tile rv hide-m" data-cat="short" style="--d:.18s">
-        <figure class="ar-reel"><img src="src/creator-filming-a-product-unboxing-review-on-a-phone.jpg" alt="Creator filming a product unboxing review on a phone" /><span class="views">980K views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
-        <div class="tile-meta"><span class="tile-tag">Short-Form</span><h4>UGC Unboxing Series</h4><p>Creator-style cut · Captions &amp; hooks</p></div>
+        <figure class="ar-reel"><video class="tile-video" src="https://res.cloudinary.com/dofiza4ph/video/upload/v1793014263/vid_1_v2_wed7ew.mp4" poster="https://res.cloudinary.com/dofiza4ph/video/upload/v1793014263/vid_1_v2_wed7ew.jpg" preload="none" playsinline loop aria-label="UGC Reel video"></video><span class="views">980K views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
+        <div class="tile-meta"><h4>UGC Reel</h4></div>
       </article>
       <article class="tile rv hide" data-cat="graphic" style="--d:.18s">
-        <figure class="ar-graphic"><img src="src/abstract-blue-poster-artwork-with-a-yellow-circle.jpg" alt="Abstract blue poster artwork with a yellow circle" /></figure>
-        <div class="tile-meta"><span class="tile-tag">Graphics</span><h4>Social Posters Pack</h4><p>Campaign creatives · All platform sizes</p></div>
+        <figure class="ar-graphic"><img src="https://res.cloudinary.com/dofiza4ph/image/upload/v1793012206/11111_nlejta.jpg" alt="Abstract blue poster artwork with a yellow circle" /></figure>
+        <div class="tile-meta"><h4>Mako Cat Ad</h4></div>
       </article>
       <article class="tile tile-wide rv hide" data-cat="longform">
-        <figure class="ar-wide"><img src="src/food-spread-filmed-for-a-you-food-episode.jpg" alt="Food spread filmed for a You Food episode" /><span class="views">2.1M views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
-        <div class="tile-meta"><span class="tile-tag">Long Form</span><h4>You Food · The Burger Breakdown</h4><p>Title, script, edit &amp; thumbnail · Full package</p></div>
+        <figure class="ar-wide"><video class="tile-video" src="https://res.cloudinary.com/dofiza4ph/video/upload/v1793013995/PODCAST_SAMPLE_40_SEC_FINAL_tmhyhk.mp4" poster="https://res.cloudinary.com/dofiza4ph/video/upload/v1793013995/PODCAST_SAMPLE_40_SEC_FINAL_tmhyhk.jpg" preload="none" playsinline loop aria-label="Podcast Sample video"></video><span class="views">2.1M views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
+        <div class="tile-meta"><h4>Podcast Sample</h4></div>
       </article>
       <article class="tile tile-wide rv hide" data-cat="longform" style="--d:.08s">
-        <figure class="ar-wide"><img src="src/burger-close-up-from-a-you-food-video.jpg" alt="Burger close-up from a You Food video" /><span class="views">1.4M views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
-        <div class="tile-meta"><span class="tile-tag">Long Form</span><h4>You Food · Street Food Tour</h4><p>Full edit + packaging · YouTube</p></div>
+        <figure class="ar-wide"><video class="tile-video" src="https://res.cloudinary.com/dofiza4ph/video/upload/v1793014022/PODCAST_INTRO_4_FINAL_pq4dxa.mp4" poster="https://res.cloudinary.com/dofiza4ph/video/upload/v1793014022/PODCAST_INTRO_4_FINAL_pq4dxa.jpg" preload="none" playsinline loop aria-label="Podcast Intro video"></video><span class="views">1.4M views</span><span class="play"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5Z"/></svg></span></figure>
+        <div class="tile-meta"><h4>Podcast Intro</h4></div>
       </article>
       <article class="tile tile-wide rv hide" data-cat="thumb">
-        <figure class="ar-wide"><img src="src/youtube-thumbnail-design-of-a-chef-holding-a-giant-burger.jpg" alt="YouTube thumbnail design of a chef holding a giant burger" /></figure>
-        <div class="tile-meta"><span class="tile-tag">Thumbnail</span><h4>Food Channel Thumbnail</h4><p>CTR concept · 16:9</p></div>
+        <figure class="ar-wide"><img src="https://res.cloudinary.com/dofiza4ph/image/upload/v1793015710/If_you_need_to_make_10k_in_10_days_watch_this_video_gqgmr8.jpg" alt="YouTube thumbnail: If you need to make $10K in 10 days, watch this video" /></figure>
+        <div class="tile-meta"><h4>Make $10K in 10 Days</h4></div>
       </article>
       <article class="tile tile-wide rv hide" data-cat="thumb" style="--d:.08s">
-        <figure class="ar-wide"><img src="src/youtube-thumbnail-design-of-a-creator-pointing-at-a-glowing-phone.jpg" alt="YouTube thumbnail design of a creator pointing at a glowing phone" /></figure>
-        <div class="tile-meta"><span class="tile-tag">Thumbnail</span><h4>Tech Channel Thumbnail</h4><p>CTR concept · 16:9</p></div>
+        <figure class="ar-wide"><img src="https://res.cloudinary.com/dofiza4ph/image/upload/v1793015709/What_is_the_TikTok_Shop_Affiliate_program_vtkawd.jpg" alt="YouTube thumbnail: What is the TikTok Shop Affiliate Program" /></figure>
+        <div class="tile-meta"><h4>TikTok Shop Affiliate Program</h4></div>
       </article>
     </div>
   </div>
@@ -1369,6 +1379,32 @@
     });
   });
 
+  /* short-form video tiles - click a tile to play/pause its video
+     inline. Videos use preload="none" with a Cloudinary poster frame,
+     so nothing heavy loads until a visitor actually plays one. */
+  var tileVideos = document.querySelectorAll("#workGrid .tile-video");
+  tileVideos.forEach(function(vid){
+    var tile = vid.closest(".tile");
+    if (!tile) return;
+    vid.addEventListener("play", function(){ tile.classList.add("is-playing"); });
+    vid.addEventListener("pause", function(){ tile.classList.remove("is-playing"); });
+    vid.addEventListener("ended", function(){ tile.classList.remove("is-playing"); });
+    tile.addEventListener("click", function(){
+      if (vid.paused){
+        tileVideos.forEach(function(other){ if (other !== vid && !other.paused) other.pause(); });
+        var p = vid.play();
+        if (p && p.catch) p.catch(function(){});
+      } else {
+        vid.pause();
+      }
+    });
+  });
+  filterBtns.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      tileVideos.forEach(function(vid){ if (!vid.paused) vid.pause(); });
+    });
+  });
+
   /* clients carousel - smooth infinite auto-scroll, arrows + drag */
   var carTrack = document.getElementById("carTrack");
   if (carTrack){
@@ -1452,7 +1488,13 @@
     navEl.classList.toggle("scrolled", y > 40);
     if (navMobileMq.matches){
       navEl.classList.remove("hide");
-      navEl.classList.toggle("logo-only", y > 60);
+      /* buffer zone: morph in past 60px, restore only below 40px,
+         so hovering around one threshold cannot restart the glide */
+      if (y > 60){
+        navEl.classList.add("logo-only");
+      } else if (y < 40){
+        navEl.classList.remove("logo-only");
+      }
     } else {
       navEl.classList.remove("logo-only");
       if (y <= 90){
