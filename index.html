@@ -788,6 +788,27 @@
     .svc-foot .from{display:none}
     .svc-foot{justify-content:flex-end}
   }
+  /* ---------- section heads with headings: one consistent treatment ----------
+     Each section head is ghost numeral + label + a short heading line
+     (3-4 words). All five heads share the exact same label size,
+     heading size, ghost size and spacing, so no section reads bigger
+     or smaller than another; the per-section margin overrides further
+     up are neutralised for these .cx heads. The label keeps its blue
+     on light sections and yellow on the blue Case Studies band, the
+     ghost keeps its matching tint, and the heading keeps its ink /
+     white colour - same sizes and style everywhere. */
+  .sec-head.cx .idx{margin-bottom:14px;font-size:.84rem;letter-spacing:.14em;line-height:1.2}
+  .sec-head.cx .ghost{font-size:clamp(6.5rem,13vw,11rem)}
+  .sec-head.cx h2{font-size:clamp(1.72rem,3.3vw,2.45rem);line-height:1.08}
+  #clients .sec-head.cx,#services .sec-head.cx,#work .sec-head.cx,
+  #cases .sec-head.cx,#testimonials .sec-head.cx{margin-bottom:clamp(26px,3.4vw,36px)}
+  @media (max-width:820px){
+    .sec-head.cx .idx{font-size:.78rem;margin-bottom:10px}
+    .sec-head.cx .ghost{font-size:6.5rem}
+    .sec-head.cx h2{font-size:1.62rem}
+    #clients .sec-head.cx,#services .sec-head.cx,#work .sec-head.cx,
+    #cases .sec-head.cx,#testimonials .sec-head.cx{margin-bottom:22px}
+  }
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
     html{scroll-behavior:auto}
@@ -886,7 +907,7 @@
     <div class="sec-head rv cx">
       <span class="ghost" aria-hidden="true">02</span>
       <div class="idx">SERVICES</div>
-      <h2>Video editing and graphic design.</h2>
+      <h2>We cut. We design.</h2>
     </div>
     <div class="svc-grid">
       <!-- Video editing -->
@@ -896,9 +917,9 @@
           <h3>Video Editing</h3>
         </div>
         <div class="svc-tabs" role="tablist" aria-label="Video editing formats">
-          <button type="button" class="svc-tab active" role="tab" aria-selected="true" data-tab="long">Long Form</button>
-          <button type="button" class="svc-tab" role="tab" aria-selected="false" data-tab="short">Short Form</button>
-          <button type="button" class="svc-tab" role="tab" aria-selected="false" data-tab="ugc">AI UGC</button>
+          <button type="button" class="svc-tab active" role="tab" aria-selected="true" data-tab="long" data-turnaround="48 hours">Long Form</button>
+          <button type="button" class="svc-tab" role="tab" aria-selected="false" data-tab="short" data-turnaround="24 hours">Short Form</button>
+          <button type="button" class="svc-tab" role="tab" aria-selected="false" data-tab="ugc" data-turnaround="24 hours">AI UGC</button>
         </div>
         <div class="svc-panel active" data-panel="long" role="tabpanel">
           <p class="svc-desc">Structured and paced to hold attention to the end, finished with sound design and a proper grade.</p>
@@ -1057,7 +1078,7 @@
     <div class="sec-head rv cx">
       <span class="ghost" aria-hidden="true">04</span>
       <div class="idx">CASE STUDIES</div>
-      <h2>Featured clients. Full<br />creative ownership.</h2>
+      <h2>Proof over promises.</h2>
     </div>
     <div class="case-grid">
       <article class="case rv">
@@ -1102,7 +1123,7 @@
     <div class="sec-head rv cx">
       <span class="ghost" aria-hidden="true">05</span>
       <div class="idx">KIND WORDS</div>
-      <h2>Clients who stopped<br />worrying about content.</h2>
+      <h2>Clients say it best.</h2>
     </div>
     <div class="tst-grid rv">
       <article class="tst rot-l">
@@ -1353,6 +1374,14 @@
         panels.forEach(function(p){
           p.classList.toggle("active", p.getAttribute("data-panel") === key);
         });
+        /* per-tab turnaround (Video Editing card only - its tabs carry
+           data-turnaround; the Graphic Design tabs do not, so that
+           card's footer never changes) */
+        var turn = tab.getAttribute("data-turnaround");
+        if (turn){
+          var fromStrong = card.querySelector(".svc-foot .from strong");
+          if (fromStrong) fromStrong.textContent = turn;
+        }
       });
     });
   });
