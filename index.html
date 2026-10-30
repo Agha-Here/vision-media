@@ -456,14 +456,15 @@
   }
   .case:hover .go{background:var(--yellow);border-color:var(--yellow);color:var(--ink);transform:rotate(45deg)}
   .case p{color:var(--muted-on-blue);margin-top:11px;font-size:.93rem}
-  .case-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}
+  .case-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px;margin-bottom:26px}
   .case-chips span{
     font-family:var(--font-ui);font-weight:600;font-size:.84rem;
     border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:6px 13px;color:#fff;
   }
-  .case-stats{display:flex;gap:24px;flex-wrap:wrap;margin-top:auto;padding-top:20px}
+  .case-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:auto;padding-top:20px;border-top:1px solid rgba(255,255,255,.18)}
+  .case-stats .cs{display:flex;flex-direction:column;gap:6px;min-width:0}
   .case-stats .cs b{font-family:var(--font-head);font-weight:800;font-size:1.3rem;display:block;line-height:1.1}
-  .case-stats .cs span{font-size:.85rem;color:var(--muted-on-blue);font-family:var(--font-ui)}
+  .case-stats .cs span{font-size:.85rem;line-height:1.35;color:var(--muted-on-blue);font-family:var(--font-ui)}
 
   /* ---------- clients carousel ---------- */
   #clients{padding-top:clamp(58px,6vw,78px);padding-bottom:clamp(68px,6.5vw,92px);overflow:hidden}
@@ -779,7 +780,10 @@
     .svc{padding:20px 18px}
     .svc h3{font-size:1.22rem}
     .case{padding:20px 18px}
-    .case-stats{gap:16px}
+    .case-chips{margin-bottom:22px}
+    .case-stats{gap:14px;padding-top:16px}
+    .case-stats .cs b{font-size:1.12rem}
+    .case-stats .cs span{font-size:.8rem}
     /* contact - watermark off, card tightened, submit full width */
     .cta-watermark{display:none}
     .lead-card{padding:24px 20px 22px}
@@ -1233,25 +1237,25 @@
         <p>The AI ad creative OS. We script, edit and ship Mako's UGC-style ad creatives and product content, hooks, statics and fast iterations for paid social, week after week.</p>
         <div class="case-chips"><span>UGC ad edits</span><span>Static ads</span><span>Hooks &amp; iterations</span><span>Meta + TikTok</span></div>
         <div class="case-stats">
-          <div class="cs"><b>40+</b><span>Creatives shipped</span></div>
-          <div class="cs"><b>60+</b><span>Scripts &amp; hooks</span></div>
-          <div class="cs"><b>2</b><span>Ad platforms</span></div>
+          <div class="cs"><b>130+</b><span>Creatives shipped</span></div>
+          <div class="cs"><b>3x</b><span>Growth</span></div>
+          <div class="cs"><b>3</b><span>Ad platforms</span></div>
         </div>
       </article>
       <article class="case rv" style="--d:.1s">
         <div class="case-top">
           <div>
-            <div class="kind">YouTube · Food Channel</div>
-            <h3>You Food</h3>
+            <div class="kind">DTC Oral Care · Ad Creative</div>
+            <h3>Smile+</h3>
           </div>
-          <a class="go" href="https://www.youtube.com/@YouFood-t2o" target="_blank" rel="noopener" aria-label="Visit You Food on YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></a>
+          <span class="go" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span>
         </div>
-        <p>A food channel we run end to end, titles, scripts, full video edits, thumbnails and analytics. Every upload is planned, cut and packaged to grow the channel.</p>
-        <div class="case-chips"><span>Titles &amp; scripts</span><span>Full video edits</span><span>Thumbnails</span><span>Analytics</span></div>
+        <p>We turned a category-first oral-care product into a performance creative system, using UGC, direct-response video and static ads built to stop the scroll and convert.</p>
+        <div class="case-chips"><span>UGC and AI ads</span><span>Static ads</span><span>Hooks and iterations</span><span>Meta + TikTok</span></div>
         <div class="case-stats">
-          <div class="cs"><b>2</b><span>Videos past 1M views</span></div>
-          <div class="cs"><b>Weekly</b><span>Upload cadence</span></div>
-          <div class="cs"><b>100%</b><span>End-to-end ownership</span></div>
+          <div class="cs"><b>4.1x</b><span>ROAS</span></div>
+          <div class="cs"><b>$139K+</b><span>30-day revenue</span></div>
+          <div class="cs"><b>2.2K+</b><span>Orders</span></div>
         </div>
       </article>
     </div>
